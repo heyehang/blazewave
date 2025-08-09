@@ -129,3 +129,29 @@ func (s *Server) Accept(w http.ResponseWriter, r *http.Request) (*Conn, error) {
 
 	return conn, nil
 }
+
+// DynamicPools represents pools that can be dynamically assigned per connection
+type DynamicPools struct {
+	ReaderPool     pool.BufferPool
+	WriterPool     pool.BufferPool
+	HeartbeatTimer timer.TimerPool
+}
+
+// AcceptWithPools accepts a WebSocket connection with dynamically specified pools
+func (s *Server) AcceptWithPools(w http.ResponseWriter, r *http.Request, pools *DynamicPools) (*Conn, error) {
+	opts := s.opts.AcceptOptions.cloneWithDefaults()
+
+	if pools != nil {
+		if pools.ReaderPool != nil {
+			opts.ReaderPool = pools.ReaderPool
+		}
+		if pools.WriterPool != nil {
+			opts.WriterPool = pools.WriterPool
+		}
+		if pools.HeartbeatTimer != nil {
+			opts.HeartbeatTimer = pools.HeartbeatTimer
+		}
+	}
+
+	return accept(w, r, opts)
+}
