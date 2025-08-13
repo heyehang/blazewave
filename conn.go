@@ -112,6 +112,8 @@ type Conn struct {
 	lastPongTime        *atomic.Int64 // Unix timestamp of last pong received
 	heartbeatFailed     *atomic.Bool  // Whether heartbeat has failed
 	heartbeatTimerOwned bool          // Whether this connection owns the timer (created locally)
+
+	Metadata *Metadata
 }
 
 type connConfig struct {
@@ -218,6 +220,8 @@ func newConn(cfg connConfig) *Conn {
 		lastPongTime:    lastPongTime,
 		heartbeatFailed: heartbeatFailed,
 		pingCounter:     pingCounter,
+
+		Metadata: NewMetadata(),
 	}
 
 	c.readMu = newMu(c)
@@ -271,6 +275,16 @@ func (c *Conn) startReadLoop() {
 // An empty string means the default protocol.
 func (c *Conn) Subprotocol() string {
 	return c.subprotocol
+}
+
+// RemoteAddr returns the remote network address.
+func (c *Conn) RemoteAddr() net.Addr {
+	return c.remoteAddr
+}
+
+// LocalAddr returns the local network address.
+func (c *Conn) LocalAddr() net.Addr {
+	return c.localAddr
 }
 
 func (c *Conn) close() error {
