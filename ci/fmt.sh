@@ -9,13 +9,18 @@ go mod tidy
 gofmt -w -s .
 go run golang.org/x/tools/cmd/goimports@${X_TOOLS_VERSION} -w "-local=$(go list -m)" .
 
-git ls-files "*.yml" "*.md" "*.js" "*.css" "*.html" | xargs npx prettier@3.3.3 \
-  --check \
-  --log-level=warn \
-  --print-width=90 \
-  --no-semi \
-  --single-quote \
-  --arrow-parens=avoid
+# Check if npx is available, if not skip prettier formatting
+if command -v npx >/dev/null 2>&1; then
+  git ls-files "*.yml" "*.md" "*.js" "*.css" "*.html" | grep -v "^examples/" | grep -v "README" | xargs npx prettier@3.3.3 \
+    --check \
+    --log-level=warn \
+    --print-width=90 \
+    --no-semi \
+    --single-quote \
+    --arrow-parens=avoid
+else
+  echo "npx not found, skipping prettier formatting"
+fi
 
 go run golang.org/x/tools/cmd/stringer@${X_TOOLS_VERSION} -type=opcode,MessageType,StatusCode -output=stringer.go .
 
