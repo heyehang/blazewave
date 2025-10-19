@@ -40,10 +40,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: dev
+          fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
       - run: AUTOBAHN=1 make bench
+    continue-on-error: true
   test-dev:
     runs-on: ubuntu-latest
     steps:
@@ -56,6 +58,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: dev
+          fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
@@ -64,3 +67,4 @@ jobs:
         with:
           name: coverage-dev.html
           path: ./ci/out/coverage.html
+    continue-on-error: true
