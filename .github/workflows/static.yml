@@ -42,7 +42,7 @@ jobs:
           mkdir -p ./ci/out/static
           cp ./ci/out/coverage.html ./ci/out/static/coverage.html
           percent=$(go tool cover -func ./ci/out/coverage.prof | tail -n1 | awk '{print $3}' | tr -d '%')
-          wget -O ./ci/out/static/coverage.svg "https://img.shields.io/badge/coverage-${percent}%25-success"
+          curl -L -o ./ci/out/static/coverage.svg "https://img.shields.io/badge/coverage-${percent}%25-success"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
