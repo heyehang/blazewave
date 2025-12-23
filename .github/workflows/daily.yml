@@ -34,37 +34,39 @@ jobs:
         with:
           name: coverage.html
           path: ./ci/out/coverage.html
-  bench-dev:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: dev
-          fetch-depth: 0
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: ./go.mod
-      - run: AUTOBAHN=1 make bench
-    continue-on-error: true
-  test-dev:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Disable AppArmor
-        if: runner.os == 'Linux'
-        run: |
-          # Disable AppArmor for Ubuntu 23.10+.
-          # https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
-          echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
-      - uses: actions/checkout@v4
-        with:
-          ref: dev
-          fetch-depth: 0
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: ./go.mod
-      - run: AUTOBAHN=1 make test
-      - uses: actions/upload-artifact@v4
-        with:
-          name: coverage-dev.html
-          path: ./ci/out/coverage.html
-    continue-on-error: true
+  # bench-dev and test-dev jobs removed because 'dev' branch does not exist
+  # Uncomment and update ref when dev branch is created:
+  # bench-dev:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         ref: dev
+  #         fetch-depth: 0
+  #     - uses: actions/setup-go@v5
+  #       with:
+  #         go-version-file: ./go.mod
+  #     - run: AUTOBAHN=1 make bench
+  #   continue-on-error: true
+  # test-dev:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Disable AppArmor
+  #       if: runner.os == 'Linux'
+  #       run: |
+  #         # Disable AppArmor for Ubuntu 23.10+.
+  #         # https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
+  #         echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         ref: dev
+  #         fetch-depth: 0
+  #     - uses: actions/setup-go@v5
+  #       with:
+  #         go-version-file: ./go.mod
+  #     - run: AUTOBAHN=1 make test
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         name: coverage-dev.html
+  #         path: ./ci/out/coverage.html
+  #   continue-on-error: true

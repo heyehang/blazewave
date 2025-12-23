@@ -1,11 +1,9 @@
 name: ci
 on:
   push:
-    branches:
-      - master
+    branches: [main]
   pull_request:
-    branches:
-      - master
+    branches: [main]
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
@@ -34,10 +32,7 @@ jobs:
     steps:
       - name: Disable AppArmor
         if: runner.os == 'Linux'
-        run: |
-          # Disable AppArmor for Ubuntu 23.10+.
-          # https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
-          echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
+        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
